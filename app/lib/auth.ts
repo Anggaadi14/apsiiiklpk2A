@@ -176,3 +176,5 @@ export function forbidden(message = 'Forbidden'): NextResponse {
     { status: 403 },
   )
 }
+
+// fix: correct role-based redirect for jamu and kaprodi
