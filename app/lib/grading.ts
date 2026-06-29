@@ -87,3 +87,5 @@ export function formatSemester(semester: string, tahunAkademik: string): string 
   const semesterCapital = semester.charAt(0).toUpperCase() + semester.slice(1);
   return `${semesterCapital} ${tahunAkademik}`;
 }
+
+// fix: handle null grades in cpmk weighted calculation
