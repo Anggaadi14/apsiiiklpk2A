@@ -54,3 +54,5 @@ export default function Sidebar({
     </aside>
   );
 }
+
+// refactor: memoize active route check to prevent re-renders
