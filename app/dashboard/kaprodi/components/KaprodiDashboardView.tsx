@@ -413,7 +413,7 @@ export default function KaprodiDashboardView({ sessionUser }: KaprodiDashboardVi
               <div>
                 <h4 className="text-[11px] font-bold uppercase tracking-wide text-rose-700 mb-2">CPL Kritis</h4>
                 <div className="space-y-3">
-                  {criticalCpl.slice(0, 4).map((item) => (
+                  {criticalCpl.map((item) => (
                     <div key={item.id} className="bg-white p-3 rounded border border-rose-100 shadow-sm">
                       <div className="flex items-center mb-1">
                         <span className="text-xs font-bold text-gray-900">{item.id}</span>
@@ -430,7 +430,7 @@ export default function KaprodiDashboardView({ sessionUser }: KaprodiDashboardVi
               <div>
                 <h4 className="text-[11px] font-bold uppercase tracking-wide text-amber-700 mb-2">IK Bermasalah</h4>
                 <div className="space-y-3">
-                  {criticalIk.slice(0, 4).map((item) => (
+                  {criticalIk.map((item) => (
                     <div key={item.kode} className="bg-white p-3 rounded border border-amber-100 shadow-sm">
                       <div className="flex items-center mb-1">
                         <span className="text-xs font-bold text-gray-900">{item.kode}</span>

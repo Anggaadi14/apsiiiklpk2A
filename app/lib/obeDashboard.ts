@@ -178,7 +178,7 @@ export async function getObeDashboardData(admin: AdminClient, filter: ObeFilter)
     : 0
   const cplTercapai = actualTargetRealisasiCPL.filter((c) => c.realisasi >= c.target && c.realisasi > 0)
   const cplBelum = actualTargetRealisasiCPL.filter((c) => c.realisasi < c.target)
-  const criticalCpl = cplBelum.slice(0, 5)
+  const criticalCpl = cplBelum
 
   const { data: ikRows } = cplIds.length
     ? await admin.from('indikator_kinerja').select('id_ik, id_cpl, kode_ik, deskripsi, cpl:id_cpl(kode_cpl, target_minimal)').in('id_cpl', cplIds)
@@ -204,7 +204,6 @@ export async function getObeDashboardData(admin: AdminClient, filter: ObeFilter)
     })
     .filter((ik: CriticalIkRow) => ik.nilai < ik.target)
     .sort((a: CriticalIkRow, b: CriticalIkRow) => a.nilai - b.nilai)
-    .slice(0, 5)
 
   const { data: uploadRows } = selectedKelasIds.length
     ? await admin.from('upload_log_nilai').select('id_kelas, status').eq('status', 'success').in('id_kelas', selectedKelasIds)
