@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react';
 import {
-  User,
   CheckCircle,
   XCircle,
   MinusCircle,
@@ -226,25 +225,7 @@ export default function CplView({ cplData, detailCplData, profile }: CplViewProp
                 <p className="text-xs text-gray-500 mt-0.5">Ringkasan lengkap hierarki pembentuk CPL, IK, dan CPMK Mata Kuliah</p>
               </div>
 
-              {/* Student Profile Card Mini — PAKAI PROP `profile` */}
-              <div className="bg-gradient-to-r from-indigo-700 to-indigo-900 text-white p-5 rounded-xl shadow-md flex items-center gap-4 relative overflow-hidden">
-                <div className="absolute right-0 top-0 w-24 h-24 bg-white/5 rounded-full filter blur-xl translate-x-4 -translate-y-4" />
-                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center border border-white/20 shrink-0">
-                  <User className="w-6 h-6 text-indigo-200 animate-pulse" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-base font-extrabold truncate">{profile?.nama ?? '-'}</h4>
-                  <p className="text-indigo-200 text-xs tracking-wider uppercase font-bold mt-0.5">
-                    NIM: {profile?.nim ?? '-'}{profile?.prodi ? ` • ${profile.prodi}` : ''}
-                  </p>
-                </div>
-                <div className="text-right shrink-0">
-                  <span className="text-[10px] text-indigo-300 font-bold uppercase block tracking-wider">IPK</span>
-                  <span className="text-2xl font-black leading-none">
-                    {profile?.ipk !== undefined ? profile.ipk.toFixed(2) : '-'}
-                  </span>
-                </div>
-              </div>
+              {/* Student Profile Card Mini — dihapus per permintaan */}
 
               <div className="bg-white p-5 border border-gray-200 rounded-xl">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
