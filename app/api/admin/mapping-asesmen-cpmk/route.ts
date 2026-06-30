@@ -163,10 +163,21 @@ export async function PUT(req: NextRequest) {
         }
 
         if (idKomponen) {
+          // Ambil bobot_terhadap_mk komponen sebagai default bobot_persen.
+          // Fallback ke 100 jika belum diset (1 CPMK = 1 komponen = 100%).
+          const { data: kompData } = await admin
+            .from('komponen_nilai')
+            .select('bobot_terhadap_mk')
+            .eq('id_komponen', idKomponen)
+            .maybeSingle();
+          const bobotPersen = Number(kompData?.bobot_terhadap_mk ?? 0) > 0
+            ? Number(kompData!.bobot_terhadap_mk)
+            : 100;
+
           const { error: insErr } = await admin.from('mapping_media_cpmk').insert({
             id_komponen: idKomponen,
             id_cpmk: idCpmk,
-            bobot_persen: 0,
+            bobot_persen: bobotPersen,
           });
           if (insErr) rowErrors.push(`id_cpmk ${idCpmk}: ${insErr.message}`);
         }

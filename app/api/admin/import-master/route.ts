@@ -217,7 +217,7 @@ export async function POST(req: NextRequest) {
           if (!kompErr && kompR) {
             await admin
               .from('mapping_media_cpmk')
-              .upsert({ id_komponen: kompR.id_komponen, id_cpmk: idCpmk, bobot_persen: 0 }, { onConflict: 'id_komponen,id_cpmk' });
+              .upsert({ id_komponen: kompR.id_komponen, id_cpmk: idCpmk, bobot_persen: 100 }, { onConflict: 'id_komponen,id_cpmk' });
           }
         }
         addRow(sec, baris, kodeCpmk, !importErr, importErr);
