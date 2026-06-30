@@ -200,3 +200,4 @@ export default function TranskripPage() {
     </div>
   );
 }
+// fix: recalculate ipk using weighted sks per semester
