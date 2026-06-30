@@ -125,6 +125,20 @@ export async function POST(req: NextRequest) {
       if (id === null) ukMappingMissing.push(uk);
     }
 
+    // 6b) Sync bobot dari Excel ke komponen_nilai (jika total bobot valid = 100)
+    if (Math.abs(parsed.total_bobot - 100) <= 0.1) {
+      for (const uk of ukKeys) {
+        const idKomponen = ukToKomponen[uk];
+        const bobot = parsed.bobot_media[uk];
+        if (idKomponen && bobot > 0) {
+          await admin
+            .from('komponen_nilai')
+            .update({ bobot_terhadap_mk: bobot })
+            .eq('id_komponen', idKomponen);
+        }
+      }
+    }
+
     // 7) Lookup mahasiswa enrolled di kelas, map NIM → id_mahasiswa
     // Two-step: first get enrolled ids, then resolve NIM from mahasiswa table directly
     const { data: enrolledRows } = await admin

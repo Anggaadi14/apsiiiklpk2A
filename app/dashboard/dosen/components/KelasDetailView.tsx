@@ -125,6 +125,12 @@ export default function KelasDetailView({ sessionUser, idKelas, onBack }: KelasD
   const [saving, setSaving] = useState(false);
   const editInputRef = useRef<HTMLInputElement>(null);
 
+  // Edit bobot state
+  const [editingBobot, setEditingBobot] = useState(false);
+  const [bobotValues, setBobotValues] = useState<Record<number, string>>({});
+  const [savingBobot, setSavingBobot] = useState(false);
+  const [bobotError, setBobotError] = useState<string | null>(null);
+
   // ── Load data ──────────────────────────────────────────────────────────
   const reloadNilai = async () => {
     try {
@@ -265,6 +271,57 @@ export default function KelasDetailView({ sessionUser, idKelas, onBack }: KelasD
     } else if (e.key === 'Escape') {
       e.preventDefault();
       cancelEdit();
+    }
+  };
+
+  // ── Bobot handlers ────────────────────────────────────────────────────
+  const startEditBobot = () => {
+    if (!detail) return;
+    const initial: Record<number, string> = {};
+    for (const k of detail.komponen_nilai) {
+      initial[k.id_komponen] = String(Number(k.bobot_terhadap_mk));
+    }
+    setBobotValues(initial);
+    setBobotError(null);
+    setEditingBobot(true);
+  };
+
+  const cancelEditBobot = () => {
+    setEditingBobot(false);
+    setBobotValues({});
+    setBobotError(null);
+  };
+
+  const saveBobot = async () => {
+    if (!detail) return;
+    const bobotList = detail.komponen_nilai.map((k) => ({
+      id_komponen: k.id_komponen,
+      bobot: parseFloat(bobotValues[k.id_komponen] ?? '0') || 0,
+    }));
+    const total = bobotList.reduce((s, i) => s + i.bobot, 0);
+    if (Math.abs(total - 100) > 0.1) {
+      setBobotError(`Total bobot harus 100% (sekarang ${total.toFixed(1)}%).`);
+      return;
+    }
+    setSavingBobot(true);
+    setBobotError(null);
+    try {
+      const raw = sessionStorage.getItem('currentUser') ?? '';
+      const res = await fetch('/api/dosen/komponen-bobot', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-user-session': raw },
+        body: JSON.stringify({ id_kelas: idKelas, bobotList }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) throw new Error(json.message ?? `HTTP ${res.status}`);
+      // Reload kelas detail agar bobot ter-update di UI
+      await loadAll();
+      setEditingBobot(false);
+      setBobotValues({});
+    } catch (e) {
+      setBobotError(e instanceof Error ? e.message : 'Gagal menyimpan bobot.');
+    } finally {
+      setSavingBobot(false);
     }
   };
 
@@ -476,13 +533,48 @@ const closeUploadModal = () => {
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div className="p-4 border-b border-gray-200 flex items-center justify-between flex-wrap gap-2">
           <h3 className="font-semibold text-gray-900">Tabel Nilai</h3>
-          <button
-            onClick={openUploadModal}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-sm text-sm"
-          >
-            <Upload className="w-4 h-4" /> Upload Nilai SIAKAD
-          </button>
+          <div className="flex items-center gap-2">
+            {!editingBobot ? (
+              <button
+                onClick={startEditBobot}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-indigo-300 text-indigo-700 rounded-lg hover:bg-indigo-50 transition text-sm font-medium"
+              >
+                Edit Bobot (%)
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={cancelEditBobot}
+                  disabled={savingBobot}
+                  className="px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={saveBobot}
+                  disabled={savingBobot}
+                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition text-sm"
+                >
+                  {savingBobot ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  Simpan Bobot
+                </button>
+              </>
+            )}
+            <button
+              onClick={openUploadModal}
+              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-sm text-sm"
+            >
+              <Upload className="w-4 h-4" /> Upload Nilai SIAKAD
+            </button>
+          </div>
         </div>
+        {editingBobot && (
+          <div className="px-4 py-2 bg-amber-50 border-b border-amber-200 flex items-center gap-2 text-xs text-amber-700">
+            <Info className="w-3.5 h-3.5 shrink-0" />
+            Edit bobot tiap komponen di header kolom. Total harus 100%.
+            {bobotError && <span className="text-red-600 font-semibold ml-2">{bobotError}</span>}
+          </div>
+        )}
         <div className="px-4 pt-3">
           <p className="text-xs text-gray-500 flex items-center gap-1">
             <Info className="w-3.5 h-3.5" />
@@ -511,9 +603,26 @@ const closeUploadModal = () => {
                       <div className="text-[10px] font-normal text-gray-500 normal-case">
                         {k.nama_media}
                       </div>
-                      <div className="text-[10px] font-normal text-gray-400 normal-case">
-                        {Number(k.bobot_terhadap_mk).toFixed(1)}%
-                      </div>
+                      {editingBobot ? (
+                        <div className="mt-1 flex items-center justify-center gap-1">
+                          <input
+                            type="number"
+                            min={0}
+                            max={100}
+                            step={0.1}
+                            value={bobotValues[k.id_komponen] ?? ''}
+                            onChange={(e) =>
+                              setBobotValues((prev) => ({ ...prev, [k.id_komponen]: e.target.value }))
+                            }
+                            className="w-16 px-1 py-0.5 border-2 border-amber-400 rounded text-center text-xs focus:outline-none focus:border-indigo-500"
+                          />
+                          <span className="text-[10px] text-gray-400">%</span>
+                        </div>
+                      ) : (
+                        <div className="text-[10px] font-normal text-gray-400 normal-case">
+                          {Number(k.bobot_terhadap_mk).toFixed(1)}%
+                        </div>
+                      )}
                     </th>
                   ))}
                 </tr>
