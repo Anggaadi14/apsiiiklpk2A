@@ -215,6 +215,8 @@ export async function getObeDashboardData(admin: AdminClient, filter: ObeFilter)
     .map((k) => ({
       id_kelas: k.id_kelas,
       label: `${k.mata_kuliah?.nama_mk ?? 'Mata kuliah'} (Kelas ${k.kode_kelas})`,
+      tahun_akademik: k.tahun_akademik,
+      semester: k.semester,
       status: 'Nilai Belum Upload',
     }))
 

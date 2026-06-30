@@ -31,7 +31,7 @@ interface JamuDashboardViewProps {
 type Option = { value: string; label: string };
 type CplChartRow = { id: string; name: string; target: number; realisasi: number; deskripsi?: string };
 type CriticalIk = { kode: string; nilai: number; target: number; deskripsi: string; cpl: string };
-type IncompleteClass = { id_kelas: number; label: string; status: string };
+type IncompleteClass = { id_kelas: number; label: string; status: string; tahun_akademik?: string; semester?: string };
 type JsPdfWithAutoTable = { lastAutoTable?: { finalY?: number } };
 type DashboardData = {
   options: {
@@ -398,9 +398,14 @@ export default function JamuDashboardView({ sessionUser }: JamuDashboardViewProp
             </div>
             <div className="space-y-2">
               {(data?.incompleteClasses ?? []).map((item) => (
-                <div key={item.id_kelas} className="flex justify-between items-center bg-white p-2.5 rounded border border-slate-100 text-xs shadow-sm gap-3">
-                  <span className="font-medium text-gray-700">{item.label}</span>
-                  <span className="text-amber-600 bg-amber-50 px-2 py-0.5 rounded font-medium border border-amber-100 whitespace-nowrap">{item.status}</span>
+                <div key={item.id_kelas} className="flex justify-between items-start bg-white p-2.5 rounded border border-slate-100 text-xs shadow-sm gap-3">
+                  <div className="min-w-0">
+                    <span className="font-medium text-gray-700 block">{item.label}</span>
+                    {(item.tahun_akademik || item.semester) && (
+                      <span className="text-gray-400 mt-0.5 block">{[item.tahun_akademik, item.semester].filter(Boolean).join(' · ')}</span>
+                    )}
+                  </div>
+                  <span className="text-amber-600 bg-amber-50 px-2 py-0.5 rounded font-medium border border-amber-100 whitespace-nowrap shrink-0">{item.status}</span>
                 </div>
               ))}
               {!loading && !data?.incompleteClasses.length && (
