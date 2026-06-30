@@ -5,8 +5,8 @@ import { User, Download } from 'lucide-react';
 interface ProfileCardProps {
   name: string;
   nim: string;
-  angkatan: number;
-  semester: number;
+  angkatan?: number;
+  semester?: number;
   rataCpl: number;
   onDownloadReport?: () => void;
 }
@@ -19,6 +19,9 @@ export default function ProfileCard({
   rataCpl,
   onDownloadReport,
 }: ProfileCardProps) {
+  const angkatanLabel = angkatan && angkatan > 0 ? `Angkatan ${angkatan}` : null;
+  const semesterLabel = semester && semester > 0 ? `Semester ${semester}` : null;
+
   return (
     <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-6 rounded-xl shadow-md mb-6 relative overflow-hidden">
       {/* Decorative background elements */}
@@ -34,7 +37,14 @@ export default function ProfileCard({
             <h2 className="text-2xl font-bold tracking-tight mb-1">{name}</h2>
             <p className="text-indigo-100 text-sm font-medium">NIM: {nim}</p>
             <p className="text-indigo-200 text-xs mt-1">
-              Angkatan {angkatan} &bull; Semester {semester}
+              {angkatanLabel && semesterLabel
+                ? <>{angkatanLabel} &bull; {semesterLabel}</>
+                : angkatanLabel
+                  ? angkatanLabel
+                  : semesterLabel
+                    ? semesterLabel
+                    : <span className="inline-block w-32 h-3 bg-white/20 rounded animate-pulse" />
+              }
             </p>
           </div>
         </div>

@@ -236,7 +236,7 @@ export async function getObeDashboardData(admin: AdminClient, filter: ObeFilter)
       cpl_tercapai: cplTercapai.length,
       cpl_total: actualTargetRealisasiCPL.length,
       cpl_belum: cplBelum.length,
-      cpl_belum_label: cplBelum.slice(0, 3).map((c) => c.id).join(', ') || '-',
+      cpl_belum_label: cplBelum.map((c) => c.id).join(', ') || '-',
       ik_bermasalah: criticalIk.length,
       mk_belum_upload: incompleteClasses.length,
     },

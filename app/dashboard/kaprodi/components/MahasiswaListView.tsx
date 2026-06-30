@@ -169,7 +169,7 @@ export default function MahasiswaListView({ sessionUser }: MahasiswaListViewProp
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-white rounded-lg border border-gray-200 p-4">
           <p className="text-sm text-gray-600">Total Mahasiswa</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">{loading ? '...' : summary.total}</p>
@@ -177,10 +177,6 @@ export default function MahasiswaListView({ sessionUser }: MahasiswaListViewProp
         <div className="bg-white rounded-lg border border-gray-200 p-4">
           <p className="text-sm text-gray-600">Rata-rata CPL</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">{summary.rata_cpl ?? '-'}</p>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <p className="text-sm text-gray-600">Rata-rata Semester</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{summary.rata_semester ?? '-'}</p>
         </div>
       </div>
     </div>

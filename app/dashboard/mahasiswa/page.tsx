@@ -33,7 +33,7 @@ import { CplDataItem, DetailCplItem } from './data';
 interface ProfileData {
   nim: string;
   nama_mahasiswa: string;
-  angkatan: number;
+  angkatan: number | null;
   semester_aktif: number;
   ipk: number;
   prodi: string;
@@ -174,12 +174,8 @@ export default function MahasiswaDashboard() {
       try {
         const result = await fetchWithSession('/api/mahasiswa/cpl');
         if (result.success && result.data) {
-          if (result.data.cplData?.length > 0) {
-            setCplData(result.data.cplData);
-          }
-          if (result.data.detailCpl?.length > 0) {
-            setDetailCpl(result.data.detailCpl);
-          }
+          setCplData(result.data.cplData ?? cplDataFallback);
+          setDetailCpl(result.data.detailCpl ?? detailCPLFallback);
         }
       } catch (err) {
         const msg = err instanceof Error ? err.message : 'Gagal memuat data CPL';
@@ -388,8 +384,8 @@ export default function MahasiswaDashboard() {
           <ProfileCard
             name={profile?.nama_mahasiswa ?? sessionUser.name}
             nim={profile?.nim             ?? sessionUser.identifier}
-            angkatan={profile?.angkatan   ?? 0}
-            semester={profile?.semester_aktif ?? 0}
+            angkatan={profile?.angkatan   != null ? profile.angkatan : undefined}
+            semester={profile?.semester_aktif ?? undefined}
             rataCpl={rataCpl}
             onDownloadReport={handleDownloadReport}
           />

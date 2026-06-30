@@ -28,6 +28,7 @@ export interface DetailCplItem {
   cpl: string;
   deskripsi: string;
   nilai: number;
+  target?: number;
   status: string;
   ik: IkItem[];
 }
@@ -65,6 +66,7 @@ export const detailCPL: DetailCplItem[] = [
     cpl: 'CPL-1',
     deskripsi: 'Mampu menerapkan pengetahuan matematika, sains, dan teknik industri',
     nilai: 85,
+    target: 80,
     status: 'Tercapai',
     ik: [
       {
@@ -116,6 +118,7 @@ export const detailCPL: DetailCplItem[] = [
     cpl: 'CPL-2',
     deskripsi: 'Mampu merancang sistem terintegrasi dengan mempertimbangkan aspek teknis dan ekonomis',
     nilai: 78,
+    target: 80,
     status: 'Belum Tercapai',
     ik: [
       {
@@ -147,9 +150,42 @@ export const detailCPL: DetailCplItem[] = [
     ]
   },
   {
+    cpl: 'CPL-3',
+    deskripsi: 'Mampu menerapkan kompetensi rekayasa tingkat lanjut di bidang teknik industri (CPL-3)',
+    nilai: 92,
+    target: 80,
+    status: 'Tercapai',
+    ik: []
+  },
+  {
+    cpl: 'CPL-4',
+    deskripsi: 'Mampu menerapkan kompetensi rekayasa tingkat lanjut di bidang teknik industri (CPL-4)',
+    nilai: 88,
+    target: 80,
+    status: 'Tercapai',
+    ik: []
+  },
+  {
+    cpl: 'CPL-5',
+    deskripsi: 'Mampu menerapkan kompetensi rekayasa tingkat lanjut di bidang teknik industri (CPL-5)',
+    nilai: 75,
+    target: 80,
+    status: 'Belum Tercapai',
+    ik: []
+  },
+  {
+    cpl: 'CPL-6',
+    deskripsi: 'Mampu menerapkan kompetensi rekayasa tingkat lanjut di bidang teknik industri (CPL-6)',
+    nilai: 90,
+    target: 80,
+    status: 'Tercapai',
+    ik: []
+  },
+  {
     cpl: 'CPL-7',
     deskripsi: 'Mampu berkomunikasi efektif dalam tim multidisiplin',
     nilai: 0,
+    target: 80,
     status: 'Belum Ditempuh',
     ik: [
       {
@@ -170,7 +206,31 @@ export const detailCPL: DetailCplItem[] = [
         ]
       }
     ]
-  }
+  },
+  {
+    cpl: 'CPL-8',
+    deskripsi: 'Mampu menerapkan kompetensi rekayasa tingkat lanjut di bidang teknik industri (CPL-8)',
+    nilai: 86,
+    target: 80,
+    status: 'Tercapai',
+    ik: []
+  },
+  {
+    cpl: 'CPL-9',
+    deskripsi: 'Mampu menerapkan kompetensi rekayasa tingkat lanjut di bidang teknik industri (CPL-9)',
+    nilai: 0,
+    target: 80,
+    status: 'Belum Ditempuh',
+    ik: []
+  },
+  {
+    cpl: 'CPL-10',
+    deskripsi: 'Mampu menerapkan kompetensi rekayasa tingkat lanjut di bidang teknik industri (CPL-10)',
+    nilai: 83,
+    target: 80,
+    status: 'Tercapai',
+    ik: []
+  },
 ];
 
 export const mataKuliahData: MataKuliahItem[] = [

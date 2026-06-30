@@ -85,13 +85,31 @@ export async function GET(request: NextRequest) {
       ipk = totalSKS > 0 ? Math.round((totalMutu / totalSKS) * 100) / 100 : 0
     }
 
+    // Hitung semester aktif dari angkatan vs tahun akademik aktif.
+    // Formula: selisih tahun * 2 + offset semester (Ganjil=1, Genap=2).
+    // Fallback ke terms.size jika data tidak lengkap.
+    let semesterAktif = terms.size || 1
+    if (mhs.angkatan) {
+      const { data: taRow } = await admin
+        .from('tahun_akademik')
+        .select('tahun_mulai, semester')
+        .eq('is_active', true)
+        .maybeSingle<{ tahun_mulai: number; semester: string }>()
+
+      if (taRow) {
+        const semOffset = taRow.semester === 'Genap' ? 2 : 1
+        const computed = (taRow.tahun_mulai - mhs.angkatan) * 2 + semOffset
+        if (computed > 0) semesterAktif = computed
+      }
+    }
+
     return Response.json({
       success: true,
       data: {
         nim: mhs.nim,
         nama_mahasiswa: mhs.nama_mahasiswa,
-        angkatan: mhs.angkatan,
-        semester_aktif: terms.size || 1,
+        angkatan: mhs.angkatan ?? 0,
+        semester_aktif: semesterAktif,
         ipk,
         prodi: session.prodi,
       },
