@@ -62,26 +62,53 @@ export async function GET(req: NextRequest) {
     }
     const obeTotal = cplCount + ikCount + cpmkCount;
 
+    // Hitung kelas tayang — filter TA+semester+kurikulum.
+    // Jika hasilnya 0 dan filter TA dipakai, coba tanpa filter TA
+    // (data lama mungkin punya tahun_akademik berbeda format).
     let kelasQuery = admin.from('kelas_mk').select('id_kelas', { count: 'exact', head: true });
     if (ta) kelasQuery = kelasQuery.eq('tahun_akademik', ta);
     if (sem) kelasQuery = kelasQuery.eq('semester', sem);
     if (id_kurikulum) kelasQuery = kelasQuery.eq('id_kurikulum', id_kurikulum);
-    const { count: mkTayang } = await kelasQuery;
+    let { count: mkTayang } = await kelasQuery;
+
+    // Fallback: kalau 0 dan ada filter ta/sem, coba tanpa filter ta/sem
+    if ((!mkTayang || mkTayang === 0) && (ta || sem)) {
+      let fallbackQuery = admin.from('kelas_mk').select('id_kelas', { count: 'exact', head: true });
+      if (id_kurikulum) fallbackQuery = fallbackQuery.eq('id_kurikulum', id_kurikulum);
+      const { count: fallbackCount } = await fallbackQuery;
+      if (fallbackCount && fallbackCount > 0) mkTayang = fallbackCount;
+    }
 
     let kelasIdsQuery = admin.from('kelas_mk').select('id_kelas');
     if (ta) kelasIdsQuery = kelasIdsQuery.eq('tahun_akademik', ta);
     if (sem) kelasIdsQuery = kelasIdsQuery.eq('semester', sem);
     if (id_kurikulum) kelasIdsQuery = kelasIdsQuery.eq('id_kurikulum', id_kurikulum);
-    const { data: kelasIdsRows } = await kelasIdsQuery;
+    let { data: kelasIdsRows } = await kelasIdsQuery;
+
+    // Fallback ids juga
+    if ((!kelasIdsRows || kelasIdsRows.length === 0) && (ta || sem)) {
+      let fallbackIdsQuery = admin.from('kelas_mk').select('id_kelas');
+      if (id_kurikulum) fallbackIdsQuery = fallbackIdsQuery.eq('id_kurikulum', id_kurikulum);
+      const { data: fallbackIds } = await fallbackIdsQuery;
+      if (fallbackIds && fallbackIds.length > 0) kelasIdsRows = fallbackIds;
+    }
     const kelasIdList = (kelasIdsRows ?? []).map((k) => k.id_kelas);
 
     let uploadMasuk = 0;
+    let dataBelumLengkap = 0;
     if (kelasIdList.length) {
-      const { data: uploadRows } = await admin.from('upload_log_nilai').select('id_kelas').eq('status', 'success').in('id_kelas', kelasIdList);
+      // Upload masuk = kelas yang sudah ada upload (success atau partial)
+      const { data: uploadRows } = await admin
+        .from('upload_log_nilai')
+        .select('id_kelas')
+        .in('status', ['success', 'partial'])
+        .in('id_kelas', kelasIdList);
       uploadMasuk = new Set((uploadRows ?? []).map((u) => u.id_kelas)).size;
+      // Data belum lengkap = kelas yang belum pernah diupload sama sekali
+      dataBelumLengkap = Math.max(0, (mkTayang ?? 0) - uploadMasuk);
+    } else {
+      dataBelumLengkap = mkTayang ?? 0;
     }
-
-    const dataBelumLengkap = Math.max(0, (mkTayang ?? 0) - uploadMasuk);
 
     return NextResponse.json({
       success: true,
