@@ -108,7 +108,7 @@ export default function LoginPage() {
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1.5">
-              Email / NIM / NIP
+              Email
             </label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -118,7 +118,7 @@ export default function LoginPage() {
                 type="text"
                 value={identifier}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setIdentifier(e.target.value)}
-                placeholder="Masukkan email, NIM, atau NIP/NIDN/NIK..."
+                placeholder="Masukkan email..."
                 className="w-full pl-10 pr-4 py-2.5 bg-slate-900/40 border border-white/10 rounded-xl text-white text-sm placeholder-slate-500 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-semibold"
                 required
                 disabled={isLoading}
@@ -184,7 +184,7 @@ export default function LoginPage() {
         {/* Helper text — akun demo */}
         <div className="mt-5 pt-4 border-t border-white/10">
           <p className="text-[10px] text-indigo-300/70 font-semibold uppercase tracking-wider mb-1.5">
-            Akun Demo (password: <code className="text-indigo-200 normal-case">demo123</code>)
+            Akun Demo (password: <code className="text-indigo-200">demo123</code>)
           </p>
           <ul className="text-[10px] text-slate-400 space-y-0.5 leading-relaxed">
             <li>• Mahasiswa: <code className="text-indigo-300">I0320045</code> (NIM)</li>
