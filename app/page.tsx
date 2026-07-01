@@ -184,7 +184,7 @@ export default function LoginPage() {
         {/* Helper text — akun demo */}
         <div className="mt-5 pt-4 border-t border-white/10">
           <p className="text-[10px] text-indigo-300/70 font-semibold uppercase tracking-wider mb-1.5">
-            Akun Demo (password: <code className="text-indigo-200">demo123</code>)
+            Akun Demo (password: <code className="text-indigo-200 normal-case">demo123</code>)
           </p>
           <ul className="text-[10px] text-slate-400 space-y-0.5 leading-relaxed">
             <li>• Mahasiswa: <code className="text-indigo-300">I0320045</code> (NIM)</li>
