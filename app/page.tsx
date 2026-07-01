@@ -187,7 +187,7 @@ export default function LoginPage() {
             Akun Demo (password: <code className="text-indigo-200">demo123</code>)
           </p>
           <ul className="text-[10px] text-slate-400 space-y-0.5 leading-relaxed">
-            <li>• Mahasiswa: <code className="text-indigo-300">I0320045</code> (NIM)</li>
+            <li>• Mahasiswa: <code className="text-indigo-300">azzahranp2005@student.uns.ac.id</code> (pass: rararara)</li>
             <li>• Dosen: <code className="text-indigo-300">dosen1@sicpl.test</code> (atau NIP)</li>
             <li>• Kaprodi: <code className="text-indigo-300">kaprodi1@sicpl.test</code></li>
             <li>• Jamu: <code className="text-indigo-300">jamu1@sicpl.test</code></li>
